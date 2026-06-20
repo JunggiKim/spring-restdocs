@@ -42,7 +42,7 @@ public interface ConstraintResolver {
 	 * @param method the method
 	 * @param parameterIndex the index of the parameter
 	 * @return the list of constraints, never {@code null}
-	 * @since 4.0.1
+	 * @since 4.0.2
 	 */
 	default List<Constraint> resolveForMethodParameter(Method method, int parameterIndex) {
 		return Collections.emptyList();

@@ -14,8 +14,10 @@ The following example shows how to do so for method parameter constraints:
 
 include-code::MethodParameterConstraints[]
 <1> Create an instance of `ConstraintDescriptions` for the `UserController` class.
-<2> Get the descriptions of the first parameter's constraints of the `user` method.
-This list contains two descriptions: one for the `NotNull` constraint and one for the `Min` constraint.
+<2> Get the descriptions of the request parameter's constraints of the `user` method.
+<3> Get the descriptions of the path variable's constraints of the `user` method.
+The first list contains two descriptions: one for the `NotNull` constraint and one for the `Min` constraint.
+The second list contains one description for the `Pattern` constraint.
 
 The {samples}/restful-notes-spring-hateoas/src/test/java/com/example/notes/ApiDocumentation.java[`ApiDocumentation`] class in the Spring HATEOAS sample shows this functionality in action.
 

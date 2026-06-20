@@ -102,7 +102,7 @@ public class ConstraintDescriptions {
 	 * @param method the method
 	 * @param parameterIndex the index of the parameter
 	 * @return the list of constraint descriptions
-	 * @since 4.0.1
+	 * @since 4.0.2
 	 */
 	public List<String> descriptionsForMethodParameter(Method method, int parameterIndex) {
 		List<Constraint> constraints = this.constraintResolver.resolveForMethodParameter(method, parameterIndex);
@@ -117,7 +117,7 @@ public class ConstraintDescriptions {
 	 * @param parameterIndex the index of the parameter
 	 * @param parameterTypes the types of the parameters of the method
 	 * @return the list of constraint descriptions
-	 * @since 4.0.1
+	 * @since 4.0.2
 	 */
 	public List<String> descriptionsForMethodParameter(String methodName, int parameterIndex,
 			Class<?>... parameterTypes) {

@@ -20,19 +20,28 @@ import java.util.List;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import org.springframework.restdocs.constraints.ConstraintDescriptions;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 class MethodParameterConstraints {
 
-	List<String> describeMethodParameterConstraints() {
+	List<String> describeRequestParameterConstraints() {
 		ConstraintDescriptions controllerConstraints = new ConstraintDescriptions(UserController.class); // <1>
-		return controllerConstraints.descriptionsForMethodParameter("user", 0, Long.class); // <2>
+		return controllerConstraints.descriptionsForMethodParameter("user", 0, Long.class, String.class); // <2>
+	}
+
+	List<String> describePathVariableConstraints() {
+		ConstraintDescriptions controllerConstraints = new ConstraintDescriptions(UserController.class);
+		return controllerConstraints.descriptionsForMethodParameter("user", 1, Long.class, String.class); // <3>
 	}
 
 	static class UserController {
 
-		void user(@NotNull @Min(1) Long id) {
+		void user(@RequestParam @NotNull @Min(1) Long limit,
+				@PathVariable @Pattern(regexp = "^[A-Z0-9_-]+$") String id) {
 		}
 
 	}

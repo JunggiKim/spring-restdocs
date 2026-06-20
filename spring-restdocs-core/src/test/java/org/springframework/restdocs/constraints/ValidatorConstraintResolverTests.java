@@ -28,15 +28,20 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import jakarta.validation.Payload;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.assertj.core.api.Condition;
 import org.assertj.core.description.TextDescription;
 import org.hibernate.validator.constraints.CompositionType;
 import org.hibernate.validator.constraints.ConstraintComposition;
 import org.junit.jupiter.api.Test;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -88,6 +93,17 @@ class ValidatorConstraintResolverTests {
 	}
 
 	@Test
+	void springMvcMethodParameterConstraints() throws NoSuchMethodException {
+		Method method = ConstrainedMethods.class.getDeclaredMethod("springMvc", int.class, String.class);
+		List<Constraint> requestParamConstraints = this.resolver.resolveForMethodParameter(method, 0);
+		assertThat(requestParamConstraints).hasSize(1);
+		assertThat(requestParamConstraints.get(0)).is(constraint(Min.class).config("value", 1L));
+		List<Constraint> pathVariableConstraints = this.resolver.resolveForMethodParameter(method, 1);
+		assertThat(pathVariableConstraints).hasSize(1);
+		assertThat(pathVariableConstraints.get(0)).is(constraint(Pattern.class).config("regexp", "^[A-Z0-9_-]+$"));
+	}
+
+	@Test
 	void noMethodParameterConstraints() throws NoSuchMethodException {
 		Method method = ConstrainedMethods.class.getDeclaredMethod("none", String.class);
 		List<Constraint> constraints = this.resolver.resolveForMethodParameter(method, 0);
@@ -98,6 +114,13 @@ class ValidatorConstraintResolverTests {
 	void negativeMethodParameterIndexReturnsNoConstraints() throws NoSuchMethodException {
 		Method method = ConstrainedMethods.class.getDeclaredMethod("single", String.class);
 		List<Constraint> constraints = this.resolver.resolveForMethodParameter(method, -1);
+		assertThat(constraints).isEmpty();
+	}
+
+	@Test
+	void outOfRangeMethodParameterIndexReturnsNoConstraints() throws NoSuchMethodException {
+		Method method = ConstrainedMethods.class.getDeclaredMethod("single", String.class);
+		List<Constraint> constraints = this.resolver.resolveForMethodParameter(method, 1);
 		assertThat(constraints).isEmpty();
 	}
 
@@ -134,6 +157,9 @@ class ValidatorConstraintResolverTests {
 		}
 
 		void multiple(@NotNull @Size(min = 8, max = 16) String multiple) {
+		}
+
+		void springMvc(@RequestParam @Min(1) int limit, @PathVariable @Pattern(regexp = "^[A-Z0-9_-]+$") String id) {
 		}
 
 		void none(String none) {
